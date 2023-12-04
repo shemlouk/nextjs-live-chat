@@ -4,10 +4,10 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 
 import { SessionContext } from "@/app/lib/contexts/session";
-import { Comment } from "@/app/lib/definitions";
+import { Message } from "@/app/lib/definitions";
 import { useContext } from "react";
 
-export function ChatComment({ user, content, createdAt }: Comment) {
+export function ChatMessage({ user, content, createdAt }: Message) {
   const { user: currentUser } = useContext(SessionContext);
 
   const isFromCurrentUser = user.id === currentUser?.id;
