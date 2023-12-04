@@ -29,6 +29,7 @@ export default function Page() {
   return (
     <>
       <RoomHeader title="Global Room" />
+
       <main className="text-darkGray flex h-screen w-full flex-col items-center">
         <ul className="flex flex-1 flex-col gap-6 overflow-y-scroll px-4 pb-8 pt-28">
           <li>
