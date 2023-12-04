@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${sfProDisplay.className} antialiased`}>
+      <body className={`${sfProDisplay.className} bg-lightGray antialiased`}>
         {children}
       </body>
     </html>
