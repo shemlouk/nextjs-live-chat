@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CookiesProvider } from "next-client-cookies/server";
 import "./globals.css";
 import { sfProDisplay } from "./ui/fonts";
 
@@ -13,10 +14,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${sfProDisplay.className} bg-lightGray antialiased`}>
-        {children}
-      </body>
-    </html>
+    <CookiesProvider>
+      <html lang="en">
+        <body className={`${sfProDisplay.className} bg-lightGray antialiased`}>
+          {children}
+        </body>
+      </html>
+    </CookiesProvider>
   );
 }
