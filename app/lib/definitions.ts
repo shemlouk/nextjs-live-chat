@@ -13,6 +13,9 @@ export interface Message {
 }
 
 export interface Session {
-  userId: string;
+  user: {
+    id: string;
+    name: string;
+  };
   token: string;
 }

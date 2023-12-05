@@ -19,7 +19,17 @@ export async function login(_prevState: any, formData: FormData) {
 
     /* Replace axios API request here to get credentials */
     const session = await new Promise<Session>((resolve) =>
-      setTimeout(() => resolve({ userId: "user-1", token: "token-1" }), 3000),
+      setTimeout(
+        () =>
+          resolve({
+            user: {
+              id: "874faec2-cc31-4bf4-8999-4d33ac5a3ca8",
+              name: "samuel",
+            },
+            token: "token-1",
+          }),
+        3000,
+      ),
     );
 
     cookies().set("session", JSON.stringify(session), {
