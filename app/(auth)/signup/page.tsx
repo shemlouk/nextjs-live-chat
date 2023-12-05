@@ -15,8 +15,20 @@ export default function Page() {
       <form action={dispatch} className="flex flex-col gap-2">
         <Input name="name" type="text" placeholder="nome" />
         <Input name="email" type="email" placeholder="email" />
-        <Input name="password" type="password" placeholder="senha" />
-        <Input name="confirm" type="password" placeholder="confirme a senha" />
+        <Input
+          name="password"
+          type="password"
+          min={6}
+          max={16}
+          placeholder="senha"
+        />
+        <Input
+          name="confirmPassword"
+          type="password"
+          min={6}
+          max={16}
+          placeholder="confirme a senha"
+        />
 
         <Submit>Cadastrar</Submit>
       </form>
@@ -25,7 +37,7 @@ export default function Page() {
 
       <Link
         href="/signin"
-        className="text-darkGray/60 hover:text-darkGray text-center text-sm hover:underline"
+        className="text-center text-sm text-darkGray/60 hover:text-darkGray hover:underline"
       >
         Já tenho uma conta.
       </Link>
