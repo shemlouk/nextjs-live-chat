@@ -9,12 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/socket.io": "^3.0.2",
     "dayjs": "^1.11.10",
     "lucide-react": "^0.294.0",
     "next": "14.0.3",
     "next-client-cookies": "^1.1.0",
     "react": "^18",
     "react-dom": "^18",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
     "tailwindcss-animated": "^1.0.1",
     "zod": "^3.22.4"
   },

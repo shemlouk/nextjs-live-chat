@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useCallback, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
+import { initializeSocket } from "../api/socket";
 import { Message } from "../definitions";
 
 export type ChatContextValue = {
@@ -13,36 +14,14 @@ export const ChatContext = createContext<ChatContextValue>({
   addMessage: () => {},
 });
 
-const mockMessages = new Set([
-  {
-    id: "1",
-    user: {
-      id: "another-user",
-      name: "Jennifer",
-    },
-    content:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia consectetur corporis culpa nobis exercitationem maxime at, asperiores amet laborum doloremque corrupti impedit velit magni animi magnam, cum officiis, itaque provident.",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    user: {
-      id: "874faec2-cc31-4bf4-8999-4d33ac5a3ca8",
-      name: "Samuel",
-    },
-    content:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia consectetur corporis culpa nobis exercitationem maxime at, asperiores amet laborum doloremque corrupti impedit velit magni animi magnam, cum officiis, itaque provident.",
-    createdAt: new Date().toISOString(),
-  },
-]);
-
 export function ChatContextProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [messages, setMessages] =
-    useState<ChatContextValue["messages"]>(mockMessages);
+  const [messages, setMessages] = useState<ChatContextValue["messages"]>(
+    new Set(),
+  );
 
   const addMessage = useCallback<ChatContextValue["addMessage"]>(
     (message) => {
@@ -50,6 +29,17 @@ export function ChatContextProvider({
     },
     [setMessages, messages],
   );
+
+  useEffect(() => {
+    const socket = initializeSocket();
+
+    socket.on("chat", (data) => {
+      const message = JSON.parse(data) as Message;
+      addMessage(message);
+    });
+
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <ChatContext.Provider value={{ messages, addMessage }}>
