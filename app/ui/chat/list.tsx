@@ -8,7 +8,7 @@ export function ChatList() {
   const { messages } = useContext(ChatContext);
 
   return (
-    <ul className="flex flex-1 flex-col gap-6 overflow-y-scroll px-4 pb-8 pt-28">
+    <ul className="scrollbar-hide flex max-w-screen-md flex-1 flex-col gap-6 overflow-y-scroll px-4 pb-8 pt-28">
       {Array.from(messages).map((message) => {
         return (
           <li key={message.id}>
