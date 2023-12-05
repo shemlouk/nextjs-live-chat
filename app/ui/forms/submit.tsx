@@ -10,7 +10,7 @@ export function Submit(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
       {...props}
       type="submit"
       disabled={pending}
-      className="bg-lightBlue mt-3 flex items-center justify-center rounded-md py-2 font-bold text-white"
+      className="mt-3 flex items-center justify-center rounded-md bg-lightBlue py-2 font-bold text-white"
     >
       {pending && <SpinAnimation />}
       {props.children}

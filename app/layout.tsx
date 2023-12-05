@@ -17,7 +17,7 @@ export default function RootLayout({
     <CookiesProvider>
       <html lang="en">
         <body
-          className={`${sfProDisplay.className} min-w-min bg-lightGray antialiased`}
+          className={`${sfProDisplay.className} min-w-min bg-lightGray antialiased selection:bg-lightBlue/30 selection:text-lightBlue`}
         >
           {children}
         </body>

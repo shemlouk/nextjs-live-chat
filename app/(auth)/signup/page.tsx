@@ -12,7 +12,10 @@ export default function Page() {
 
   return (
     <>
-      <form action={dispatch} className="flex flex-col gap-2">
+      <form
+        action={dispatch}
+        className="animate-fade-up animate-duration-300 flex flex-col gap-2"
+      >
         <Input name="name" type="text" placeholder="nome" />
         <Input name="email" type="email" placeholder="email" />
         <Input
