@@ -8,9 +8,17 @@ import { SessionContext } from "@/app/lib/contexts/session";
 import { Message } from "@/app/lib/definitions";
 import { ChatMessage } from "./message";
 
-export function ChatList() {
-  const { messages } = useContext(ChatContext);
+export function ChatList({
+  initialMessagesList,
+}: {
+  initialMessagesList: Message[];
+}) {
+  const { messages, setInitialMessages } = useContext(ChatContext);
   const { session } = useContext(SessionContext);
+
+  useEffect(() => {
+    setInitialMessages(new Set(initialMessagesList));
+  }, [setInitialMessages, initialMessagesList]);
 
   return (
     <ul className="scrollbar-hide flex w-full max-w-screen-md flex-1 flex-col gap-6 overflow-y-scroll px-4 pb-8 pt-28">
@@ -20,7 +28,7 @@ export function ChatList() {
         })
       ) : (
         <li className="flex h-full w-full flex-col items-center justify-center text-slate-300">
-          <Loader className="animate-duration-[6000ms] h-2/5 w-2/5 animate-spin" />
+          <Loader className="h-2/5 w-2/5 animate-spin animate-duration-[6000ms]" />
         </li>
       )}
     </ul>

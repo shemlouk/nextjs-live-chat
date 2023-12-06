@@ -15,6 +15,7 @@ import { SocketContext } from "./socket";
 
 export type ChatContextValue = {
   messages: Set<Message>;
+  setInitialMessages(messages: Set<Message>): void;
   colorMapping: Map<string, string>;
   onlineUsersCount: number;
   sendMessage(draft: Draft): void;
@@ -22,6 +23,7 @@ export type ChatContextValue = {
 
 export const ChatContext = createContext<ChatContextValue>({
   messages: new Set(),
+  setInitialMessages: () => {},
   colorMapping: new Map(),
   onlineUsersCount: 0,
   sendMessage: () => {},
@@ -46,6 +48,15 @@ export function ChatContextProvider({
       setMessages(new Set(messages.add(message)));
     },
     [setMessages, messages],
+  );
+
+  const setInitialMessages = useCallback<
+    ChatContextValue["setInitialMessages"]
+  >(
+    (messages) => {
+      setMessages(messages);
+    },
+    [setMessages],
   );
 
   const sendMessage = useCallback<ChatContextValue["sendMessage"]>(
@@ -98,6 +109,7 @@ export function ChatContextProvider({
     <ChatContext.Provider
       value={{
         messages,
+        setInitialMessages,
         sendMessage,
         onlineUsersCount,
         colorMapping,
