@@ -4,13 +4,16 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 import { useContext } from "react";
 
+import { ChatContext } from "@/app/lib/contexts/chat";
 import { SessionContext } from "@/app/lib/contexts/session";
 import { Message } from "@/app/lib/definitions";
 
 export function ChatMessage({ user, content, createdAt }: Message) {
+  const { colorMapping } = useContext(ChatContext);
   const { session } = useContext(SessionContext);
 
   const isFromCurrentUser = user.id === session?.user.id;
+  const color = colorMapping.get(user.id) ?? "#5762e1";
 
   return (
     <div
@@ -22,7 +25,10 @@ export function ChatMessage({ user, content, createdAt }: Message) {
         },
       )}
     >
-      <div className="mb-4 hidden h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-black/50 font-bold text-white md:flex">
+      <div
+        className="mb-4 hidden h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-500 font-bold text-white md:flex "
+        style={{ background: color }}
+      >
         {user.name.charAt(0).toUpperCase()}
       </div>
 
@@ -46,8 +52,12 @@ export function ChatMessage({ user, content, createdAt }: Message) {
             "flex-row-reverse": isFromCurrentUser,
           })}
         >
-          <strong>{isFromCurrentUser ? "You" : user.name}</strong>
+          <strong style={{ color: isFromCurrentUser ? "#1e293b" : color }}>
+            {isFromCurrentUser ? "You" : user.name}
+          </strong>
+
           <div className="h-2 w-2 rounded-full bg-slate-300" />
+
           {dayjs(createdAt).format("hh:mm")}
         </span>
       </div>
