@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ZodError, z } from "zod";
-import { Session } from "../definitions";
+import { api } from "../api/axios";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -12,30 +12,18 @@ const loginSchema = z.object({
 
 export async function login(_prevState: any, formData: FormData) {
   try {
-    const data = loginSchema.parse({
+    const { email, password } = loginSchema.parse({
       email: formData.get("email"),
       password: formData.get("password"),
     });
 
-    /* Replace axios API request here to get credentials */
-    const session = await new Promise<Session>((resolve) =>
-      setTimeout(
-        () =>
-          resolve({
-            user: {
-              id: data.email,
-              name: data.email,
-            },
-            token: "token-1",
-          }),
-        3000,
-      ),
-    );
+    const { data } = await api.post("/signin", { email, password });
 
-    cookies().set("session", JSON.stringify(session), {
+    cookies().set("session", JSON.stringify(data), {
       maxAge: 60 * 60 * 24, // one day
     });
   } catch (error) {
+    console.error(error);
     if (error instanceof ZodError) {
       return { message: "Email ou senha inválidos." };
     }
