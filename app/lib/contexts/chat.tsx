@@ -4,16 +4,20 @@ import { createContext, useCallback, useEffect, useState } from "react";
 import { initializeSocket } from "../api/socket";
 import { Message } from "../definitions";
 
-const socket = initializeSocket();
+let socket: any;
 
 export type ChatContextValue = {
   messages: Set<Message>;
+  onlineUsersCount: number;
   sendMessage(draft: Omit<Message, "id">): void;
+  disconnect(): void;
 };
 
 export const ChatContext = createContext<ChatContextValue>({
   messages: new Set(),
+  onlineUsersCount: 0,
   sendMessage: () => {},
+  disconnect: () => {},
 });
 
 export function ChatContextProvider({
@@ -21,9 +25,7 @@ export function ChatContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [messages, setMessages] = useState<ChatContextValue["messages"]>(
-    new Set(),
-  );
+  const [messages, setMessages] = useState<Set<Message>>(new Set());
 
   const addMessageToLocalSet = useCallback(
     (message: Message) => {
@@ -46,15 +48,32 @@ export function ChatContextProvider({
     [addMessageToLocalSet],
   );
 
+  const disconnect = useCallback(() => {
+    socket.disconnect();
+  }, []);
+
+  const [onlineUsersCount, setOnlineUsersCount] = useState(0);
+
   useEffect(() => {
-    socket.on("chat", (data) => {
+    socket = initializeSocket();
+  }, []);
+
+  useEffect(() => {
+    socket.on("chat", (data: string) => {
       const message = JSON.parse(data) as Message;
       addMessageToLocalSet(message);
+    });
+
+    socket.on("online", (data: string) => {
+      const { count } = JSON.parse(data) as { count: number };
+      setOnlineUsersCount(count);
     });
   }, [addMessageToLocalSet]);
 
   return (
-    <ChatContext.Provider value={{ messages, sendMessage }}>
+    <ChatContext.Provider
+      value={{ messages, onlineUsersCount, sendMessage, disconnect }}
+    >
       {children}
     </ChatContext.Provider>
   );

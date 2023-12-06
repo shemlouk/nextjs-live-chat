@@ -1,12 +1,16 @@
 "use client";
 
-import { SessionContext } from "@/app/lib/contexts/session";
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 
+import { ChatContext } from "@/app/lib/contexts/chat";
+import { SessionContext } from "@/app/lib/contexts/session";
+
 export function RoomHeader({ title }: { title: string }) {
+  const { onlineUsersCount, disconnect } = useContext(ChatContext);
   const { logout } = useContext(SessionContext);
+
   const router = useRouter();
 
   return (
@@ -21,7 +25,7 @@ export function RoomHeader({ title }: { title: string }) {
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
             </span>
             <span>
-              <strong>200</strong> Online
+              <strong>{onlineUsersCount}</strong> Online
             </span>
           </div>
         </div>
@@ -31,6 +35,7 @@ export function RoomHeader({ title }: { title: string }) {
             const response = window.confirm("Tem certeza que quer sair?");
             if (response) {
               logout();
+              disconnect();
               router.push("/");
             }
           }}
