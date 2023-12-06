@@ -4,14 +4,16 @@ import { createContext, useCallback, useEffect, useState } from "react";
 import { initializeSocket } from "../api/socket";
 import { Message } from "../definitions";
 
+const socket = initializeSocket();
+
 export type ChatContextValue = {
   messages: Set<Message>;
-  addMessage(message: Message): void;
+  sendMessage(draft: Omit<Message, "id">): void;
 };
 
 export const ChatContext = createContext<ChatContextValue>({
   messages: new Set(),
-  addMessage: () => {},
+  sendMessage: () => {},
 });
 
 export function ChatContextProvider({
@@ -23,26 +25,36 @@ export function ChatContextProvider({
     new Set(),
   );
 
-  const addMessage = useCallback<ChatContextValue["addMessage"]>(
-    (message) => {
+  const addMessageToLocalSet = useCallback(
+    (message: Message) => {
       setMessages(new Set(messages.add(message)));
     },
     [setMessages, messages],
   );
 
-  useEffect(() => {
-    const socket = initializeSocket();
+  const sendMessage = useCallback<ChatContextValue["sendMessage"]>(
+    (draft) => {
+      socket.emit("message", JSON.stringify(draft));
 
+      const message = {
+        id: new Date().getTime().toString(),
+        ...draft,
+      };
+
+      addMessageToLocalSet(message);
+    },
+    [addMessageToLocalSet],
+  );
+
+  useEffect(() => {
     socket.on("chat", (data) => {
       const message = JSON.parse(data) as Message;
-      addMessage(message);
+      addMessageToLocalSet(message);
     });
-
-    // eslint-disable-next-line
-  }, []);
+  }, [addMessageToLocalSet]);
 
   return (
-    <ChatContext.Provider value={{ messages, addMessage }}>
+    <ChatContext.Provider value={{ messages, sendMessage }}>
       {children}
     </ChatContext.Provider>
   );
