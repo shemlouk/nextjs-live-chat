@@ -8,15 +8,16 @@ import {
   useState,
 } from "react";
 
-import { Message } from "../definitions";
+import { Draft, Message } from "../definitions";
 import { selectRandomColor } from "../utils/selectRandomColor";
+import { SessionContext } from "./session";
 import { SocketContext } from "./socket";
 
 export type ChatContextValue = {
   messages: Set<Message>;
   colorMapping: Map<string, string>;
   onlineUsersCount: number;
-  sendMessage(draft: Omit<Message, "id">): void;
+  sendMessage(draft: Draft): void;
 };
 
 export const ChatContext = createContext<ChatContextValue>({
@@ -38,6 +39,7 @@ export function ChatContextProvider({
   );
 
   const { socket } = useContext(SocketContext);
+  const { session } = useContext(SessionContext);
 
   const addMessageToLocalSet = useCallback(
     (message: Message) => {
@@ -48,18 +50,27 @@ export function ChatContextProvider({
 
   const sendMessage = useCallback<ChatContextValue["sendMessage"]>(
     (draft) => {
-      if (socket) {
+      if (socket && session) {
         socket.emit("message", JSON.stringify(draft));
 
-        const message = {
+        const message: Message = {
           id: new Date().getTime().toString(),
-          ...draft,
+          content: draft.content,
+          createdAt: new Date().toISOString(),
+          user: {
+            id: session.user.id,
+            name: session.user.name,
+          },
+          room: {
+            id: session.user.id,
+            name: session.user.name,
+          },
         };
 
         addMessageToLocalSet(message);
       }
     },
-    [addMessageToLocalSet, socket],
+    [addMessageToLocalSet, socket, session],
   );
 
   useEffect(() => {

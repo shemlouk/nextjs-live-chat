@@ -5,7 +5,7 @@ import { SessionContext } from "@/app/lib/contexts/session";
 import { Forward } from "lucide-react";
 import { useCallback, useContext } from "react";
 
-export function ChatForm() {
+export function ChatForm({ roomId }: { roomId: string }) {
   const { sendMessage } = useContext(ChatContext);
   const { session } = useContext(SessionContext);
 
@@ -18,16 +18,16 @@ export function ChatForm() {
       const data = Object.fromEntries(formData);
 
       const draft = {
-        user: session.user,
+        roomId,
+        userId: session.user.id,
         content: data.content.toString(),
-        createdAt: new Date().toISOString(),
       };
 
       sendMessage(draft);
 
       e.currentTarget.reset();
     },
-    [sendMessage, session],
+    [sendMessage, session, roomId],
   );
 
   return (
